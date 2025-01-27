@@ -3,7 +3,7 @@ import { IAgent } from '../models/models.index';
 import { handleError } from './handler-error';
 
 export default class AgentService {
-  public static async getAgent(id: string): Promise<IAgent> {
+  public async getAgent(id: string): Promise<IAgent> {
     try {
       const response = await http.get<IAgent>(`/agents/${id}`);
       return response.data;
@@ -13,7 +13,7 @@ export default class AgentService {
     }
   }
 
-  public static async getAllAgents(): Promise<IAgent[]> {
+  public async getAllAgents(): Promise<IAgent[]> {
     try {
       const response = await http.get<IAgent[]>('/agents');
       return response.data;
@@ -23,7 +23,7 @@ export default class AgentService {
     }
   }
 
-  public static async createAgent(agent: IAgent): Promise<IAgent> {
+  public async createAgent(agent: IAgent): Promise<IAgent> {
     try {
       const response = await http.post<IAgent>('/agents', agent);
       return response.data;
@@ -33,9 +33,9 @@ export default class AgentService {
     }
   }
 
-  public static async updateAgent(id: string, agent: IAgent): Promise<IAgent> {
+  public async updateAgent(id: string, agent: IAgent, config: any): Promise<IAgent> {
     try {
-      const response = await http.put<IAgent>(`/agents/${id}`, agent);
+      const response = await http.put<IAgent>(`/agents/${id}`, agent, config);
       return response.data;
     } catch (error) {
       handleError(error);
@@ -43,7 +43,7 @@ export default class AgentService {
     }
   }
 
-  public static async deleteAgent(id: string): Promise<void> {
+  public async deleteAgent(id: string): Promise<void> {
     try {
       await http.delete(`/agents/${id}`);
     } catch (error) {

@@ -1,78 +1,69 @@
 import { createAsyncThunk } from '@reduxjs/toolkit'
-import {
-  listAllUsersService,
-  listUserByIdService,
-  removeUserService,
-  updateUserService,
-  updateUserSellerService
-} from '../../services/user.service'
 import { toast } from 'react-toastify'
-import { ISeller, IUserSendInterface } from './types'
+import { IUser } from '../../models/models.index'
+import UserService from '../../services/users'
 
-export const listAllUsersAction = createAsyncThunk(
-  'user/listAll', 
-  async () => {
-  try {
-    const result = await listAllUsersService()
-    return result.data.data
-  } catch (error: any) {
-    toast.error(error.response.data.message)
+export default class UserAction {
+  private userService: UserService;
+
+  constructor() {
+    this.userService = new UserService();
   }
-})
 
-export const listUserByIdAction = createAsyncThunk(
-  'user/listById',
-  async (id: string) => {
-    try {
-      const result = await listUserByIdService(id)
-      return result.data.data
-    } catch (error: any) {
-      toast.error(error.response.data.message)
-    }
-  }
-)
-
-export const updateUserAction = createAsyncThunk(
-  'user/update',
-  async (user: IUserSendInterface) => {
-    try {
-      const config = {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        }
+  public listAllUsersAction = createAsyncThunk(
+    'user/listAll',
+    async (_, { rejectWithValue }) => {
+      try {
+        const response: IUser[] = await this.userService.getAllUsers()
+        return response
+      } catch (error: any) {
+        toast.error(error.response?.data?.message)
+        return rejectWithValue(error.response?.data?.message)
       }
-      const result = await updateUserService(user.id, user.data, config)
-      toast.success(`${result.data.message}`)
-      return true
-    } catch (error: any) {
-      toast.error(error.response.data.message)
-      return false
     }
-  }
-)
+  )
 
-export const updateUserSellerAction = createAsyncThunk(
-  'user/updateSeller',
-  async (data: ISeller) => {
-    try {
-      const result = await updateUserSellerService(data.id, data.isSeller)
-      toast.success(`${result.data.message}`)
-      return true
-    } catch (error: any) {
-      toast.error(error.response.data.message)
-      return false
+  public listUserByIdAction = createAsyncThunk(
+    'user/listById',
+    async (id: string, { rejectWithValue }) => {
+      try {
+        const response: IUser = await this.userService.getUser(id)
+        return response
+      } catch (error: any) {
+        toast.error(error.response?.data?.message)
+        return rejectWithValue(error.response?.data?.message)
+      }
     }
-  }
-)
+  )
 
-export const removeUserAction = createAsyncThunk(
-  'user/remove',
-  async (id: string) => {
-    try {
-      const result = await removeUserService(id)
-      toast.success(`${result.data.message}`)
-    } catch (error: any) {
-      toast.error(error.response.data.message)
+  public updateUserAction = createAsyncThunk(
+    'user/update',
+    async (user: any, { rejectWithValue }) => {
+      try {
+        const config = {
+          headers: { 'Content-Type': 'multipart/form-data' }
+        }
+        await this.userService.updateUser(user.id, user.data, config)
+        toast.success('Usuário atualizado com sucesso');
+        return true
+      } catch (error: any) {
+        toast.error(error.response?.data?.message)
+        return rejectWithValue(false)
+      }
     }
-  }
-)
+  )
+
+  public removeUserAction = createAsyncThunk(
+    'user/remove',
+    async (id: string, { rejectWithValue }) => {
+      try {
+        await this.userService.deleteUser(id)
+        toast.success('Usuário removido com sucesso');
+        return true
+      } catch (error: any) {
+        toast.error(error.response?.data?.message)
+        return rejectWithValue(error.response?.data?.message)
+      }
+    }
+  )
+}

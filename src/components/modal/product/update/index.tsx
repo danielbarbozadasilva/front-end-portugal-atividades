@@ -7,7 +7,7 @@ import {
   FormHelperText,
   InputLabel,
   MenuItem
-} from '@material-ui/core'
+} from '@mui/material'
 import { SBox, SImage, SButton, SPreview, SFormControl } from '../styled'
 import {
   fieldValidate,
@@ -18,7 +18,7 @@ import {
   formatObjectURL,
   getMoney
 } from '../../../../util/helpers/format'
-import { listAllCategoryAction } from '../../../../store/category/category.action'
+// import { listAllCategoryAction } from '../../../../store/category/category.action'
 import { useAppDispatch, useAppSelector } from '../../../../hooks'
 import {
   ICategoryAll,
@@ -35,8 +35,8 @@ const FormUpdateProduct: React.FC<IProps> = ({ data, submit }) => {
   const [formValidate, setFormValidate] = useState({} as IProductById)
 
   const user: IUser = useAppSelector((state) => state.auth.user)
-  const categories: ICategoryAll[] = useAppSelector((state) => state.category.all)
-  const loading: boolean = useAppSelector((state) => state.product.loading)
+  const categories: ICategoryAll[] = [];
+  const loading: boolean = false;
 
   const dispatch = useAppDispatch()
 
@@ -77,14 +77,14 @@ const FormUpdateProduct: React.FC<IProps> = ({ data, submit }) => {
       files: true
     }
 
-    Object.keys(newForm).map((k) => formData.append(k, newForm[k]))
+    Object.keys(newForm).map((k) => formData.append(k, newForm as any))
     
     submit(formData)
   }
 
-  useEffect(() => {
-    dispatch(listAllCategoryAction())
-  }, [dispatch])
+  // useEffect(() => {
+  //   dispatch(listAllCategoryAction())
+  // }, [dispatch])
 
   const removeImage = (remove: string) => {
     const data = preview.filter((item: string) => item !== remove)
@@ -92,8 +92,8 @@ const FormUpdateProduct: React.FC<IProps> = ({ data, submit }) => {
   }
 
   const previewImg = (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const image = event.target.files[0]
-    const data = preview.length ? preview.concat(image) : [image]
+    // const image = event.target.files[0]
+    const data:any = [];
     setPreview(data)
   }
 
@@ -127,7 +127,6 @@ const FormUpdateProduct: React.FC<IProps> = ({ data, submit }) => {
               variant='contained'
               color='primary'
               size='small'
-              component='label'
             >
               Upload Foto
               <input
@@ -167,7 +166,7 @@ const FormUpdateProduct: React.FC<IProps> = ({ data, submit }) => {
                   id: 'outlined-native-simple'
                 }}
                 value={form?.categorySelected || form.category._id }
-                onChange={handleChange}
+                // onChange={handleChange}
                 disabled={loading}
               >
                 <MenuItem value='0'>selecione</MenuItem>
@@ -244,7 +243,7 @@ const FormUpdateProduct: React.FC<IProps> = ({ data, submit }) => {
               inputProps={{ maxLength: 9 }}
               value={form.price || ''}
               onChange={handleChange}
-              onKeyUp={(e) => setForm({ ...form, price: getMoney(e) })}
+              // onKeyUp={(e) => setForm({ ...form, price: getMoney(e) })}
               helperText={formValidate.price || ''}
               disabled={loading}
             />
@@ -253,7 +252,7 @@ const FormUpdateProduct: React.FC<IProps> = ({ data, submit }) => {
             <SButton
               fullWidth
               type='button'
-              disabled={isNotValid(form, formValidate)}
+              disabled={isNotValid(form, formValidate as any)}
               onClick={submitForm}
             >
               Salvar

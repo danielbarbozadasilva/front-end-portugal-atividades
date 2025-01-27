@@ -15,14 +15,13 @@ import {
   SContainerPagination,
   settings
 } from '../../../components/portal/cards/styled'
-import { listAllCategoryAction } from '../../../store/category/category.action'
+// import { listAllCategoryAction } from '../../../store/category/category.action'
 import { useAppDispatch, useAppSelector } from '../../../hooks'
 import { useNavigate, useParams } from 'react-router-dom'
-import Slider from 'react-slick'
 import { Helmet } from 'react-helmet'
 import { Filters, ICategory, PageTitle, IProduct } from './types'
 import Search from '../../../components/portal/search'
-import { listAllProductsAction } from '../../../store/product/product.action'
+// import { listAllProductsAction } from '../../../store/product/product.action'
 import ProductCard from '../../../components/portal/cards/product'
 import PaginationSelector from '../../../components/paginate/selector/index.tsx'
 import PaginationComponent from '../../../components/paginate/index'
@@ -32,9 +31,9 @@ const Home: React.FC<PageTitle> = ({ title }) => {
   const dispatch = useAppDispatch()
   const navigate = useNavigate()
 
-  const product: IProduct[] = useAppSelector((state) => state.product.all)
-  const category: ICategory[] = useAppSelector((state) => state.category.all)
-  const loading: boolean = useAppSelector((state) => state.category.loading)
+  const product: IProduct[] = [];
+  const category: ICategory[] = [];
+  const loading: boolean = false;
   const [itensPerPage, setItensPerPage] = React.useState<number>(5)
   const [currentPage, setCurrentPage] = React.useState<number>(0)
   const { search } = useParams<string>()
@@ -49,13 +48,13 @@ const Home: React.FC<PageTitle> = ({ title }) => {
         order: '',
         userId: ''
       }
-      dispatch(listAllProductsAction(filters))
+      // dispatch(listAllProductsAction(filters))
     }
   }, [itensPerPage, currentPage])
 
-  useEffect(() => {
-    dispatch(listAllCategoryAction())
-  }, [dispatch])
+  // useEffect(() => {
+  //   dispatch(listAllCategoryAction())
+  // }, [dispatch])
 
   const CategoryList: React.FC<ICategory[]> = (category) => {
     return category?.length && category.map((item: ICategory, i: number) => {
@@ -110,7 +109,7 @@ const Home: React.FC<PageTitle> = ({ title }) => {
               setItensPerPage={setItensPerPage}
             />
             <PaginationComponent
-              pages={pages}
+              pages={5}
               currentPage={currentPage}
               itensPerPage={itensPerPage}
               setCurrentPage={setCurrentPage}
@@ -120,14 +119,6 @@ const Home: React.FC<PageTitle> = ({ title }) => {
       ) : (
         <></>
       )}
-
-      <ContainerAssets>
-        {!loading && category?.length !== 0 ? (
-          <Slider {...settings}>{CategoryList(category)}</Slider>
-        ) : (
-          <h6>Não há categorias disponiveis</h6>
-        )}
-      </ContainerAssets>
 
       <ContainerFinancial>
         <ContainerText>

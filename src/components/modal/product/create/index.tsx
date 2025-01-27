@@ -7,7 +7,7 @@ import {
   FormHelperText,
   InputLabel,
   MenuItem
-} from '@material-ui/core'
+} from '@mui/material'
 import { SBox, SImage, SButton, SPreview, SFormControl } from '../styled'
 import {
   fieldValidate,
@@ -18,7 +18,6 @@ import {
   formatObjectURL,
   getMoney
 } from '../../../../util/helpers/format'
-import { listAllCategoryAction } from '../../../../store/category/category.action'
 import { useAppDispatch, useAppSelector } from '../../../../hooks'
 import {
   ICategory,
@@ -35,8 +34,8 @@ const FormCreateProduct: React.FC<IProps> = ({ submit }) => {
   const [formValidate, setFormValidate] = useState({} as IProductById)
 
   const user: IUser = useAppSelector((state) => state.auth.user)
-  const categories: ICategory[] = useAppSelector((state) => state.category.all)
-  const loading: boolean = useAppSelector((state) => state.product.loading)
+  const categories: ICategory[] = [];
+  const loading: boolean = false;
 
   const dispatch = useAppDispatch()
 
@@ -76,23 +75,23 @@ const FormCreateProduct: React.FC<IProps> = ({ submit }) => {
       price: formatPriceField(form.price)
     }
 
-    Object.keys(newForm).map((k) => formData.append(k, newForm[k]))
+    Object.keys(newForm).map((k) => formData.append(k, newForm as any))
     submit(formData)
   }
 
-  useEffect(() => {
-    dispatch(listAllCategoryAction())
-  }, [dispatch])
+  // useEffect(() => {
+  //   dispatch(listAllCategoryAction())
+  // }, [dispatch])
 
   const removeImage = (remove: string) => {
     const data = preview.filter((item: string) => item !== remove)
     setPreview(data)
   }
 
-  const previewImg = (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const image = event.target.files[0]
+  const previewImg = (event: any) => {
+    const image = event.target.files as any
     const data = preview.length ? preview.concat(image) : [image]
-    setPreview(data)
+    setPreview(data as any)
   }
 
   return (
@@ -121,7 +120,6 @@ const FormCreateProduct: React.FC<IProps> = ({ submit }) => {
               variant="contained"
               color="primary"
               size="small"
-              component="label"
             >
               Upload Foto
               <input
@@ -161,7 +159,6 @@ const FormCreateProduct: React.FC<IProps> = ({ submit }) => {
                   id: 'outlined-native-simple'
                 }}
                 value={form.category || '0'}
-                onChange={handleChange}
                 disabled={loading}
               >
                 <MenuItem value="0">selecione</MenuItem>
@@ -247,7 +244,7 @@ const FormCreateProduct: React.FC<IProps> = ({ submit }) => {
             <SButton
               fullWidth
               type="button"
-              disabled={isNotValid(form, formValidate)}
+              disabled={isNotValid(form, formValidate as any)}
               onClick={submitForm}
             >
               Cadastrar

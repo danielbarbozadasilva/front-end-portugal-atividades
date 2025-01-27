@@ -1,11 +1,10 @@
-import ListItemIcon from '@material-ui/core/ListItemIcon'
-import ListItemText from '@material-ui/core/ListItemText'
+import ListItem from '@mui/material/ListItem'
 import styled from 'styled-components'
 
-export const SListItemIcon = styled(ListItemIcon)`
-  color: #aab4c1!important;
+export const SListItemIcon = styled(ListItem)`
+  color: #aab4c1 !important;
 `
-export const SListItemText = styled(ListItemText)`
+export const SListItemText = styled(ListItem)`
   color: #aab4c1;
   &:hover {
     text-decoration: underline;

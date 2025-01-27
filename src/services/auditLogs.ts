@@ -3,7 +3,7 @@ import { IAuditLog } from '../models/models.index';
 import { handleError } from './handler-error';
 
 export default class AuditLogService {
-  public static async getAuditLog(id: string): Promise<IAuditLog> {
+  public async getAuditLog(id: string): Promise<IAuditLog> {
     try {
       const response = await http.get<IAuditLog>(`/auditLogs/${id}`);
       return response.data;
@@ -13,7 +13,7 @@ export default class AuditLogService {
     }
   }
 
-  public static async getAllAuditLogs(): Promise<IAuditLog[]> {
+  public async getAllAuditLogs(): Promise<IAuditLog[]> {
     try {
       const response = await http.get<IAuditLog[]>('/auditLogs');
       return response.data;

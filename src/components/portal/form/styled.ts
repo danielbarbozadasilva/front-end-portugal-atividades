@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { Button, FormControl } from '@material-ui/core'
+import { Button, FormControl } from '@mui/material'
 
 export const Image = styled.img`
   width: 120px;

@@ -1,57 +1,67 @@
-import { 
-    createRatingService,
-    deleteRatingService,
-    findByIdRatingService,
-    updateRatingService
-  } from '../../services/rating.service'
-import { toast } from 'react-toastify'
-import { IRating, IRatingSend } from './types'
 import { createAsyncThunk } from '@reduxjs/toolkit'
+import { toast } from 'react-toastify'
+import { IRating } from '../../models/models.rating'
+import RatingService from '../../services/ratings'
 
-export const findByIdRatingAction = createAsyncThunk(
-  'rating/listById',
-  async (id: string) => {
-  try {
-    const result = await findByIdRatingService(id)    
-    return result.data.data
-  } catch (error: any) {
-    toast.error(error.response.data.message)
+export default class RatingMethodAction {
+  private ratingService: RatingService
+
+  constructor() {
+    this.ratingService = new RatingService()
   }
-})
 
-export const createRatingAction = createAsyncThunk(
-  'rating/create',
-  async (data: IRating) => {
-  try {
-    await createRatingService(data)
-    toast.success('Avaliação criada com sucesso!')
-    return true
-  } catch (error: any) {
-    toast.error(error.response.data.message)
-    return false
-  }
-})
-
-export const updateRatingAction = createAsyncThunk(
-  'rating/update',
-  async (data: IRatingSend) => {
-  try {
-    await updateRatingService(data.id, data)
-    toast.success('Avaliação atualizada com sucesso!')
-    return true
-  } catch (error: any) {
-    toast.error(error.response.data.message)
-    return false
-  }
-})
-
-export const deleteRatingAction = createAsyncThunk(
-  'rating/delete',
-  async (id: string) => {
-    try {
-      await deleteRatingService(id)
-      toast.success('Avaliação excluida com sucesso!')
-    } catch (error: any) {
-      toast.error(error.response.data.message)
+  public findByIdRatingAction = createAsyncThunk(
+    'rating/listById',
+    async (id: string, { rejectWithValue }) => {
+      try {
+        const response: IRating = await this.ratingService.getRating(id)
+        return response
+      } catch (error: any) {
+        toast.error(error.response?.data?.message)
+        return rejectWithValue(error.response?.data?.message)
+      }
     }
-})
+  )
+
+  public createRatingAction = createAsyncThunk(
+    'rating/create',
+    async (data: IRating, { rejectWithValue }) => {
+      try {
+        const response: IRating = await this.ratingService.createRating(data)
+        toast.success('Avaliação criada com sucesso!')
+        return response
+      } catch (error: any) {
+        toast.error(error.response?.data?.message)
+        return rejectWithValue(error.response?.data?.message)
+      }
+    }
+  )
+
+  public updateRatingAction = createAsyncThunk(
+    'rating/update',
+    async (data: IRating , { rejectWithValue }) => {
+      try {
+        await this.ratingService.updateRating(data._id, data)
+        toast.success('Avaliação atualizada com sucesso!')
+        return true
+      } catch (error: any) {
+        toast.error(error.response?.data?.message)
+        return rejectWithValue(false)
+      }
+    }
+  )
+
+  public deleteRatingAction = createAsyncThunk(
+    'rating/delete',
+    async (id: string, { rejectWithValue }) => {
+      try {
+        await this.ratingService.deleteRating(id)
+        toast.success('Avaliação excluída com sucesso!')
+        return true
+      } catch (error: any) {
+        toast.error(error.response?.data?.message)
+        return rejectWithValue(error.response?.data?.message)
+      }
+    }
+  )
+}

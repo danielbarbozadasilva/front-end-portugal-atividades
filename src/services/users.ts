@@ -4,7 +4,7 @@ import { handleError } from './handler-error';
 
 export default class UserService {
 
-  public static async getUser(id: string): Promise<IUser> {
+  public async getUser(id: string): Promise<IUser> {
     try {
       const response = await http.get<IUser>(`/users/${id}`);
       return response.data;
@@ -14,7 +14,7 @@ export default class UserService {
     }
   }
 
-  public static async getAllUsers(): Promise<IUser[]> {
+  public async getAllUsers(): Promise<IUser[]> {
     try {
       const response = await http.get<IUser[]>('/users');
       return response.data;
@@ -24,7 +24,7 @@ export default class UserService {
     }
   }
 
-  public static async createUser(user: IUser): Promise<IUser> {
+  public async createUser(user: IUser): Promise<IUser> {
     try {
       const response = await http.post<IUser>('/users', user);
       return response.data;
@@ -34,9 +34,9 @@ export default class UserService {
     }
   }
 
-  public static async updateUser(id: string, user: IUser): Promise<IUser> {
+  public async updateUser(id: string, user: any, config: any): Promise<IUser> {
     try {
-      const response = await http.put<IUser>(`/users/${id}`, user);
+      const response = await http.put<IUser>(`/users/${id}`, user, config);
       return response.data;
     } catch (error) {
       handleError(error);
@@ -44,7 +44,7 @@ export default class UserService {
     }
   }
 
-  public static async deleteUser(id: string): Promise<void> {
+  public async deleteUser(id: string): Promise<void> {
     try {
       await http.delete(`/users/${id}`);
     } catch (error) {

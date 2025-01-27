@@ -1,15 +1,14 @@
 import React from 'react';
-import Button from '@material-ui/core/Button';
+import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import DataListComponent from '../../../../datalist/index';
 import { ListOrdersProps } from './types';
-import { GridColumns } from '@mui/x-data-grid';
 
 const ListOrders: React.FC<ListOrdersProps> = ({ open, close, orders }) => {
-  const columns: GridColumns = [
+  const columns = [
     {
       field: 'id',
       headerName: 'Código',

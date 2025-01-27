@@ -13,7 +13,7 @@ import { ICategory } from './types'
 import { useAppSelector } from '../../../hooks'
 
 const Footer: React.FC = () => {
-  const category: ICategory[] = useAppSelector((state) => state.category.all)
+  const category: ICategory[] = [];
 
   return (
     <div className="footer">

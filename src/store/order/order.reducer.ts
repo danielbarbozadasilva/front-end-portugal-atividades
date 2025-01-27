@@ -1,69 +1,109 @@
-import { createSlice } from '@reduxjs/toolkit'
-import { IOrder } from './types'
-import {
-  createPaymentIntent,
-  listAllOrdersAction,
-  listByIdUserOrdersAction,
-  updateOrderAction
-} from './order.action'
+import { createSlice, PayloadAction, Slice } from '@reduxjs/toolkit'
+import OrderAction from './order.action'
+import { IOrder } from '../../models/models.index'
 
-export const slice = createSlice({
-  name: 'order',
-  initialState: {
-    loading: false,
-    all: [] as IOrder[],
-    orderByUser: [] as IOrder[],
-    error: ''
-  },
-  reducers: {},
-  extraReducers: (builder) => {
-    builder
-      .addCase(listAllOrdersAction.pending, (state) => {
-        state.loading = true
-      })
-      .addCase(listAllOrdersAction.fulfilled, (state, action) => {
-        state.loading = false
-        state.all = action.payload
-      })
-      .addCase(listAllOrdersAction.rejected, (state, action) => {
-        state.loading = false
-        state.error = action.error.message || 'Failed to fetch'
-      })
+export class OrderSlice {
+  private orderActionInstance: OrderAction
+  public slice: Slice
 
-      .addCase(listByIdUserOrdersAction.pending, (state) => {
-        state.loading = true
-      })
-      .addCase(listByIdUserOrdersAction.fulfilled, (state, action) => {
-        state.loading = false
-        state.orderByUser = action.payload.data
-      })
-      .addCase(listByIdUserOrdersAction.rejected, (state, action) => {
-        state.loading = false
-        state.error = action.error.message || 'Failed to fetch'
-      })
+  constructor() {
+    this.orderActionInstance = new OrderAction()
 
-      .addCase(createPaymentIntent.pending, (state) => {
-        state.loading = true
-      })
-      .addCase(createPaymentIntent.fulfilled, (state) => {
-        state.loading = false
-      })
-      .addCase(createPaymentIntent.rejected, (state, action) => {
-        state.loading = false
-        state.error = action.error.message || 'Failed to fetch'
-      })
+    this.slice = createSlice({
+      name: 'order',
+      initialState: {
+        loading: false,
+        all: [] as IOrder[],
+        orderid: {} as IOrder,
+        error: ''
+      },
+      reducers: {
+        setError: (state, action: PayloadAction<string>) => {
+          state.error = action.payload
+        }
+      },
+      extraReducers: (builder) => {
+        builder
+          .addCase(this.orderActionInstance.listAllOrdersAction.pending, (state) => {
+            state.loading = true
+          })
+          .addCase(
+            this.orderActionInstance.listAllOrdersAction.fulfilled,
+            (state, action: PayloadAction<IOrder[]>) => {
+              state.loading = false
+              state.all = action.payload
+            }
+          )
+          .addCase(this.orderActionInstance.listAllOrdersAction.rejected, (state, action) => {
+            state.loading = false
+            state.error = action.error.message || 'Failed to fetch'
+          })
 
-      .addCase(updateOrderAction.pending, (state) => {
-        state.loading = true
-      })
-      .addCase(updateOrderAction.fulfilled, (state) => {
-        state.loading = false
-      })
-      .addCase(updateOrderAction.rejected, (state, action) => {
-        state.loading = false
-        state.error = action.error.message || 'Failed to fetch'
-      })
+        builder
+          .addCase(this.orderActionInstance.listOrderByIdAction.pending, (state) => {
+            state.loading = true
+          })
+          .addCase(
+            this.orderActionInstance.listOrderByIdAction.fulfilled,
+            (state, action: PayloadAction<IOrder>) => {
+              state.loading = false
+              state.orderid = action.payload
+            }
+          )
+          .addCase(this.orderActionInstance.listOrderByIdAction.rejected, (state, action) => {
+            state.loading = false
+            state.error = action.error.message || 'Failed to fetch'
+          })
+
+        builder
+          .addCase(this.orderActionInstance.updateOrderAction.pending, (state) => {
+            state.loading = true
+          })
+          .addCase(this.orderActionInstance.updateOrderAction.fulfilled, (state) => {
+            state.loading = false
+          })
+          .addCase(this.orderActionInstance.updateOrderAction.rejected, (state, action) => {
+            state.loading = false
+            state.error = action.error.message || 'Failed to fetch'
+          })
+
+        builder
+          .addCase(this.orderActionInstance.removeOrderAction.pending, (state) => {
+            state.loading = true
+          })
+          .addCase(this.orderActionInstance.removeOrderAction.fulfilled, (state) => {
+            state.loading = false
+          })
+          .addCase(this.orderActionInstance.removeOrderAction.rejected, (state, action) => {
+            state.loading = false
+            state.error = action.error.message || 'Failed to fetch'
+          })
+      }
+    })
   }
-})
 
-export default slice.reducer
+  public getActions() {
+    return this.slice.actions
+  }
+
+  public getOrderActions() {
+    return this.orderActionInstance
+  }
+
+  public getReducer() {
+    return this.slice.reducer
+  }
+}
+
+const orderSliceInstance = new OrderSlice()
+
+export const { setError } = orderSliceInstance.getActions()
+
+export const {
+  listAllOrdersAction,
+  listOrderByIdAction,
+  updateOrderAction,
+  removeOrderAction
+} = orderSliceInstance.getOrderActions()
+
+export default orderSliceInstance.getReducer()

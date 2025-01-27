@@ -1,5 +1,5 @@
 import React from 'react'
-import { signUpAction } from '../../../../store/auth/auth.action'
+import ClientAction from '../../../../store/client/client.action'
 import { useAppDispatch } from '../../../../hooks'
 import FormSignUp from '../../../../components/portal/auth/signup'
 import { TypeSignUp } from '../../../types'
@@ -10,9 +10,9 @@ import { PageTitle } from './types'
 const SignUp: React.FC<PageTitle> = ({ title }) => {
   const dispatch = useAppDispatch()
   const navigate = useNavigate()
-
-  const submitForm = async (form: TypeSignUp) => {
-    dispatch(signUpAction(form)).then(() => {
+  const clientAction = new ClientAction()
+  const submitForm = async (form: any) => {
+    dispatch(clientAction.updateClientAction(form)).then(() => {
       navigate('/signin')
     })
   }

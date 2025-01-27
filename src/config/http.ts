@@ -1,50 +1,77 @@
-import axios from 'axios'
-import { getToken } from './auth'
-import { logoutAction } from '../store/auth/auth.action'
-import { history } from '../hooks/navigation-context'
+import axios, { AxiosInstance } from 'axios'
 import { toast } from 'react-toastify'
+import AuthStorage from '../config/auth'
+import AuthAction from '../store/auth/auth.action'
+import store from '../store'
+import { history } from '../hooks/navigation-context'
 
-const baseURL = process.env.REACT_APP_BASE_URL!;
+export class HttpService {
+  private http: AxiosInstance
+  private authStorage: AuthStorage
+  private authAction: AuthAction
 
-const http = axios.create({ baseURL });
+  constructor(baseURL: string = process.env.REACT_APP_BASE_URL || 'http://localhost:3000') {
+    this.authStorage = new AuthStorage()
+    this.authAction = new AuthAction()
 
-http.defaults.headers['content-type'] = 'application/json'
+    this.http = axios.create({
+      baseURL,
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
 
-if (getToken()) {
-  http.defaults.headers.token = getToken()
+    const token = this.authStorage.getToken()
+    if (token) {
+      this.http.defaults.headers.token = token
+    }
+
+    this.http.interceptors.response.use(
+      (response) => response,
+      async (error) => {
+        // Erro de rede (sem resposta do servidor)
+        if (error?.code === 'ERR_NETWORK') {
+          history.push('/error500')
+          return Promise.reject(error)
+        }
+
+        const status = error.response?.status
+        switch (status) {
+          case 401:
+            // Verifica se há token salvo; se sim, faz logout e redireciona
+            if (this.authStorage.getToken()) {
+              await store.dispatch(this.authAction.logoutAction())
+              toast.warning('Token expirado ou inválido!')
+              history.push('/signin')
+            }
+            break
+
+          case 403:
+            history.push('/error403')
+            break
+
+          case 404:
+            history.push('/error404')
+            break
+
+          case 500:
+            history.push('/error500')
+            break
+
+          default:
+            // Caso queira lidar com outros códigos ou erro genérico
+            console.error('Erro não tratado:', status, error.message)
+            break
+        }
+        return Promise.reject(error)
+      }
+    )
+  }
+
+  public getHttp(): AxiosInstance {
+    return this.http
+  }
 }
 
-http.interceptors.response.use(
-  (response) => response,
-  (error) => {
-    if (error?.code === 'ERR_NETWORK') {
-      history.push('/error500')
-    }
-
-    switch (error.response?.status) {
-      case 401:
-        if (getToken()) {
-          logoutAction()
-          history.push('/signin')
-          toast.warning('Token temporário expirado!')
-        }
-        break
-      case 403:
-        history.push('/error403')
-        break
-      case 404:
-        history.push('/error404')
-        break
-      case 500:
-        history.push('/error500')
-        break
-      default:
-        break
-    }
-    
-    window.location.reload()
-    return Promise.reject(error)
-  }
-)
-
-export default http
+const httpInstance = new HttpService().getHttp()
+export default httpInstance

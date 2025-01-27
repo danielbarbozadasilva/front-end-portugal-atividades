@@ -1,57 +1,54 @@
-import http from '../config/http';
-import { IPayment } from '../models/models.index';
-import { handleError } from './handler-error';
+import http from '../config/http'
+import { IPayment } from '../models/models.index'
+import { handleError } from './handler-error'
 
-class PaymentService {
-
-  public static async getPayment<IPayment>(id: string): Promise<IPayment> {
+export default class PaymentService {
+  public async getPayment(id: string): Promise<IPayment> {
     try {
-      const response = await http.get(`/payments/${id}`);
-      return response.data;
+      const response = await http.get<IPayment>(`/payments/${id}`)
+      return response.data
     } catch (error) {
-      handleError(error);
-      throw error;
+      handleError(error)
+      throw error
     }
   }
 
-  public static async getAllPayments(): Promise<IPayment[]> {
+  public async getAllPayments(): Promise<IPayment[]> {
     try {
-      const response = await http.get<IPayment[]>('/payments');
-      return response.data;
+      const response = await http.get<IPayment[]>('/payments')
+      return response.data
     } catch (error) {
-      handleError(error);
-      throw error;
+      handleError(error)
+      throw error
     }
   }
 
-  public static async createPayment(payment: IPayment): Promise<IPayment> {
+  public async createPayment(payment: IPayment): Promise<IPayment> {
     try {
-      const response = await http.post<IPayment>('/payments', payment);
-      return response.data;
+      const response = await http.post<IPayment>('/payments', payment)
+      return response.data
     } catch (error) {
-      handleError(error);
-      throw error;
+      handleError(error)
+      throw error
     }
   }
 
-  public static async updatePayment(id: string, payment: IPayment): Promise<IPayment> {
+  public async updatePayment(id: string, payment: Partial<IPayment>, config?: any): Promise<IPayment> {
     try {
-      const response = await http.put<IPayment>(`/payments/${id}`, payment);
-      return response.data;
+      const response = await http.put<IPayment>(`/payments/${id}`, payment, config)
+      return response.data
     } catch (error) {
-      handleError(error);
-      throw error;
+      handleError(error)
+      throw error
     }
   }
 
-  public static async deletePayment(id: string): Promise<void> {
+  public async deletePayment(id: string): Promise<void> {
     try {
-      await http.delete(`/payments/${id}`);
+      await http.delete(`/payments/${id}`)
     } catch (error) {
-      handleError(error);
-      throw error;
+      handleError(error)
+      throw error
     }
   }
 }
-
-export default PaymentService;

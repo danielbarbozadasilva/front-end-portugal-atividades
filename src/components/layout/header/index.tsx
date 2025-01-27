@@ -2,22 +2,21 @@ import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Navbar, Nav, NavDropdown } from 'react-bootstrap'
 import './styled.css'
-import { removeToken } from '../../../config/auth'
+import AuthStorage from '../../../config/auth'
 import { useAppDispatch, useAppSelector } from '../../../hooks'
-import { listAllCategoryAction } from '../../../store/category/category.action'
 import { ICategory, IUser } from './types'
-import noAvatar from '../../../assets/img/noavatar.jpg'
 
 const Header: React.FC = () => {
-  const user: IUser = useAppSelector((state) => state.auth.user)
-  const category: ICategory[] = useAppSelector((state) => state.category.all)
+  const authStorage = new AuthStorage()
+  const user: any = [{ id: 0, username: '', picture: '', isSeller: false }];
+  const category: ICategory[] = [];
   const [active, setActive] = useState(false)
   const [open, setOpen] = useState(false)
   const dispatch = useAppDispatch()
 
-  useEffect(() => {
-    dispatch(listAllCategoryAction())
-  }, [dispatch])
+  // useEffect(() => {
+  //   dispatch(listAllCategoryAction())
+  // }, [dispatch])
 
   const isActive = () => {
     window.scrollY > 0 ? setActive(true) : setActive(false)
@@ -47,7 +46,7 @@ const Header: React.FC = () => {
               <div className="avatarUser">
                 <img
                   className="avatar"
-                  src={user?.picture || noAvatar}
+                  src={user?.picture || ''}
                   alt=""
                 />
                 <NavDropdown
@@ -70,7 +69,7 @@ const Header: React.FC = () => {
                   <NavDropdown.Item
                     as={Link}
                     to="/signin"
-                    onClick={removeToken}
+                    onClick={()=>authStorage.removeToken()}
                     reloadDocument
                   >
                     Logout

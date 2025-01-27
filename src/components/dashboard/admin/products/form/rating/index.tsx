@@ -1,15 +1,14 @@
 import React from 'react'
-import Button from '@material-ui/core/Button'
+import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog'
 import DialogActions from '@mui/material/DialogActions'
 import DialogContent from '@mui/material/DialogContent'
 import DialogTitle from '@mui/material/DialogTitle'
 import DataListComponent from '../../../../../dashboard/datalist/index'
 import { ListRatingProps } from './types'
-import { GridColumns } from '@mui/x-data-grid'
 
 const ListRating: React.FC<ListRatingProps> = ({ open, close, rating }) => {
-  const columns: GridColumns = [
+  const columns = [
     {
       field: 'name',
       headerName: 'Nome',

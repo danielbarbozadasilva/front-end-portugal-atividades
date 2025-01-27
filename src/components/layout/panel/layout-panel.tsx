@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
 import clsx from 'clsx'
-import { makeStyles, Theme, createStyles } from '@mui/styles'; // (1) Estilos
-import CssBaseline from '@mui/material/CssBaseline'; // (2) Componentes
+import CssBaseline from '@mui/material/CssBaseline';
 import Drawer from '@mui/material/Drawer';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
@@ -11,27 +10,24 @@ import IconButton from '@mui/material/IconButton';
 import Container from '@mui/material/Container';
 import Hidden from '@mui/material/Hidden';
 import Button from '@mui/material/Button';
-import MenuIcon from '@mui/material';
-import MenuOpenIcon from '@mui/material';
-import AccountCircleIcon from 'mui/icons/AccountCircle';
-import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
-import PowerSettingsNewIcon from '@mui/icons-material/PowerSettingsNew';
+import Typography from '@mui/material/Typography';
 import {
   Menu as MenuIcon,
   MenuOpen as MenuOpenIcon,
   AccountCircle as AccountCircleIcon,
   ChevronLeft as ChevronLeftIcon,
-  PowerSettingsNew
+  PowerSettingsNew as PowerSettingsNewIcon
 } from '@mui/icons-material'
 import ListMenu from './item-panel'
 import { useAppSelector, useAppDispatch } from '../../../hooks'
-import { logoutAction } from '../../../store/auth/auth.action'
+import AuthAction from '../../../store/auth/auth.action'
 import { useNavigate } from 'react-router-dom'
 import { logoutUser } from '../../../store/auth/auth.reducer'
+import { makeStyles } from '@mui/styles'; 
 
-const drawerWidth = 240
+const drawerWidth = 240;
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles((theme: any) => ({
   root: {
     display: 'flex'
   },
@@ -67,8 +63,9 @@ const useStyles = makeStyles((theme) => ({
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.enteringScreen
     }),
-    [theme.breakpoints.down('xs')]: {
-      width: 0
+    [theme.breakpoints.down('sm')]: {
+      width: '100%',
+      marginLeft: 0
     },
     overflow: 'hidden'
   },
@@ -149,7 +146,7 @@ const useStyles = makeStyles((theme) => ({
       marginLeft: '0%'
     }
   }
-}))
+}));
 
 interface DashboardProps {
   children: React.ReactNode
@@ -159,6 +156,7 @@ const Dashboard: React.FC<DashboardProps> = (props) => {
   const { username, email } = useAppSelector((state) => state.auth.user)
   const navigate = useNavigate()
   const dispatch = useAppDispatch()
+  const authAction = new AuthAction();
 
   const classes = useStyles()
   const [open, setOpen] = useState(true)
@@ -198,11 +196,11 @@ const Dashboard: React.FC<DashboardProps> = (props) => {
 
           <AccountCircleIcon className={classes.userIcon} />
           <div className={classes.details}>
-            <h6> Username: {username}</h6>
-            <h6> E-mail: {email}</h6>
+            <Typography variant="h6"> Username: {username}</Typography>
+            <Typography variant="h6"> E-mail: {email}</Typography>
           </div>
           <Button onClick={handleLogout}>
-            <PowerSettingsNew className={classes.userInfo} />
+            <PowerSettingsNewIcon className={classes.userInfo} />
           </Button>
         </Toolbar>
       </AppBar>

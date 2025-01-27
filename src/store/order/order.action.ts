@@ -1,47 +1,69 @@
 import { createAsyncThunk } from '@reduxjs/toolkit'
-import {
-  listAllOrdersService,
-  listByIdUserOrdersService,
-  updateOrderService,
-  createPaymentIntentService
-} from '../../services/order.service'
-import { IPayment, IUser } from './types'
+import { toast } from 'react-toastify'
+import { IOrder } from '../../models/models.index'
+import OrderService from '../../services/orders'
 
-export const listAllOrdersAction = createAsyncThunk(
-  'order/listAll',
-  async () => {
-    try {
-      const result = await listAllOrdersService()
-      return result.data.data
-    } catch (error) {}
-  }
-)
+export default class OrderAction {
+  private orderService: OrderService
 
-export const listByIdUserOrdersAction = createAsyncThunk(
-  'order/listById',
-  async (data: IUser) => {    
-    try {
-      const result = await listByIdUserOrdersService(data.id, data.isSeller)
-      return result.data
-    } catch (error) {}
+  constructor() {
+    this.orderService = new OrderService()
   }
-)
 
-export const updateOrderAction = createAsyncThunk(
-  'order/update',
-  async (payment_intent: string) => {
-    try {
-      await updateOrderService(payment_intent)
-    } catch (error) {}
-  }
-)
+  public listAllOrdersAction = createAsyncThunk(
+    'order/listAll',
+    async (_, { rejectWithValue }) => {
+      try {
+        const response: IOrder[] = await this.orderService.getAllOrders()
+        return response
+      } catch (error: any) {
+        toast.error(error.response?.data?.message)
+        return rejectWithValue(error.response?.data?.message)
+      }
+    }
+  )
 
-export const createPaymentIntent = createAsyncThunk(
-  'order/create',
-  async (data: IPayment) => {
-    try {
-      const result = await createPaymentIntentService(data.id, data.buyerid, data.data.description)
-      return result
-    } catch (error) {}
-  }
-)
+  public listOrderByIdAction = createAsyncThunk(
+    'order/listById',
+    async (id: string, { rejectWithValue }) => {
+      try {
+        const response: IOrder = await this.orderService.getOrder(id)
+        return response
+      } catch (error: any) {
+        toast.error(error.response?.data?.message)
+        return rejectWithValue(error.response?.data?.message)
+      }
+    }
+  )
+
+  public updateOrderAction = createAsyncThunk(
+    'order/update',
+    async (order: { id: string; data: IOrder }, { rejectWithValue }) => {
+      try {
+        const config = {
+          headers: { 'Content-Type': 'multipart/form-data' }
+        }
+        await this.orderService.updateOrder(order.id, order.data, config)
+        toast.success('Pedido atualizado com sucesso')
+        return true
+      } catch (error: any) {
+        toast.error(error.response?.data?.message)
+        return rejectWithValue(false)
+      }
+    }
+  )
+
+  public removeOrderAction = createAsyncThunk(
+    'order/remove',
+    async (id: string, { rejectWithValue }) => {
+      try {
+        await this.orderService.deleteOrder(id)
+        toast.success('Pedido removido com sucesso')
+        return true
+      } catch (error: any) {
+        toast.error(error.response?.data?.message)
+        return rejectWithValue(error.response?.data?.message)
+      }
+    }
+  )
+}
