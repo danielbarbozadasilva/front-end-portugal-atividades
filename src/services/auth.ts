@@ -1,34 +1,42 @@
-import http from '../config/http';
-import { IAuth } from '../models/models.index';
-import { handleError } from './handler-error';
-
+import http from '../config/http'
+import { toast } from 'react-toastify'
+export interface IAuth {
+  status: number
+  success: boolean
+  message: string
+  data: {
+    token: string
+    username: string
+    name: string
+    email: string
+    permissions: string
+  }
+}
 export default class AuthService {
-  public async loginService(credentials: { email: string; password: string }): Promise<IAuth> {
+  public async loginService(credentials: { email: string, password: string }): Promise<IAuth | undefined> {
     try {
-      const response = await http.post<IAuth>('/auth/login', credentials);
-      return response.data;
-    } catch (error) {
-      handleError(error);
-      throw error;
+      const response = await http.post<IAuth>('/auth/login', credentials)
+      return response.data
+    } catch (error: any) {
+      toast.error(error)
     }
   }
 
-  public async logoutService(): Promise<void> {
+  public async logoutService(credentials: { _id: string }): Promise<any> {
     try {
-      await http.post('/auth/logout');
-    } catch (error) {
-      handleError(error);
-      throw error;
+      const response = await http.post('/auth/logout', credentials)
+      return response.data    
+    } catch (error: any) {
+      toast.error(error)
     }
   }
 
-  public async getProfileService(): Promise<IAuth> {
+  public async getProfileService(): Promise<IAuth | undefined> {
     try {
-      const response = await http.get<IAuth>('/auth/profile');
-      return response.data;
-    } catch (error) {
-      handleError(error);
-      throw error;
+      const response = await http.get<IAuth>('/auth/profile')
+      return response.data
+    } catch (error: any) {
+      toast.error(error)
     }
   }
 }

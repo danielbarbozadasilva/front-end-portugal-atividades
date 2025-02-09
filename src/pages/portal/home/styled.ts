@@ -61,3 +61,52 @@ export const SubTitleAbout = styled.h4`
     margin: 30px 0px 50px 0px;
   }
 `
+
+export const styles: any = {
+  container: {
+    padding: '20px'
+  },
+  filterForm: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    gap: '10px',
+    marginBottom: '20px'
+  },
+  input: {
+    padding: '8px',
+    fontSize: '14px'
+  },
+  button: {
+    padding: '8px 16px',
+    fontSize: '14px',
+    cursor: 'pointer'
+  },
+  activitiesContainer: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    gap: '20px'
+  },
+  card: {
+    border: '1px solid #ccc',
+    borderRadius: '5px',
+    width: '300px',
+    overflow: 'hidden',
+    boxShadow: '2px 2px 10px rgba(0,0,0,0.1)'
+  },
+  image: {
+    width: '100%',
+    height: '200px',
+    objectFit: 'cover'
+  },
+  cardBody: {
+    padding: '10px'
+  },
+  pagination: {
+    marginTop: '20px'
+  },
+  pageButton: {
+    margin: '0 5px',
+    padding: '5px 10px'
+  }
+}
+

@@ -1,12 +1,11 @@
-import React from 'react'
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
-import { NavigateComponent } from './hooks/navigation-context'
+import React, { useEffect } from 'react'
+import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-router-dom'
 
 import Group from '@mui/material/Icon'
 import ListAltIcon from '@mui/material/Icon'
 import CategoryIcon from '@mui/material/Icon'
 import DesignServicesIcon from '@mui/material/Icon'
-import Home from './pages/portal/home'
+import { HomePage } from './pages/portal/home'
 import Error403 from './pages/error/403'
 import Error404 from './pages/error/404'
 import Error500 from './pages/error/500'
@@ -67,29 +66,27 @@ import AuthStorage from './config/auth'
 // ]
 
 const MainRoutes: React.FC = () => {
-
   const authStorage = new AuthStorage()
   const isAuthenticated = () => authStorage.isAuthenticated()
   const typeUser = useAppSelector((state) => state.auth.user?.permissions)
-  const authorizedRoutes = []; 
-  
+  const authorizedRoutes = []
+
   // typeUser?.length
   //   ? Menu.filter((route) => route.authorization.includes(typeUser[0]))
   //   : []
 
   return (
     <Router>
-      <NavigateComponent />
       <Routes>
         <Route
           path="/*"
           element={
             <Layout>
               <Routes>
-                <Route index element={<Home title="Home" />} />
+                <Route index element={<HomePage title="Home" />} />
                 <Route
                   path="product/search/:search"
-                  element={<Home title="Produtos" />}
+                  element={<HomePage title="Produtos" />}
                 />
                 <Route path="signin" element={<SignIn title="Login" />} />
                 <Route path="signup" element={<SignUp title="Cadastrar" />} />
@@ -157,7 +154,7 @@ const MainRoutes: React.FC = () => {
             //     />
             //   </Routes>
             // </PanelLayout>
-           }
+          }
         />
       </Routes>
     </Router>

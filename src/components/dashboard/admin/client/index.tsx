@@ -7,7 +7,7 @@ import { DataListProps } from './form/types'
 import { BsToggleOff, BsToggleOn } from 'react-icons/bs'
 import { useAppDispatch } from '../../../../hooks'
 import { updateUserSellerAction } from '../../../../store/user/user.action'
-import { navigate } from '../../../../hooks/navigation-context'
+import { navigate } from '../../../../hooks/navigation'
 import DataListComponent from '../../datalist'
 
 const DataList: React.FC<DataListProps> = ({ data, modal, loading }) => {

@@ -6,7 +6,6 @@ type UserState = {
   loading: boolean
   token: string
   user: any
-  userid: string
   error: string
   registered: boolean
 }
@@ -26,7 +25,6 @@ export class AuthSlice {
         loading: false,
         token: '',
         user: this.authStorage.getUser(),
-        userid: '',
         error: '',
         registered: false
       } as UserState,
@@ -51,8 +49,8 @@ export class AuthSlice {
             (state, action) => {
               state.loading = false;
               state.registered = true;
-              state.token = action.payload?.data?.resultGenerateToken?.token || '';
-              state.user = action.payload?.data?.resultUserMapper;
+              state.token = action.payload?.data?.token || '';
+              state.user = action.payload?.data;
             }
           )
           .addCase(

@@ -3,7 +3,6 @@ import { toast } from 'react-toastify'
 import AuthStorage from '../config/auth'
 import AuthAction from '../store/auth/auth.action'
 import store from '../store'
-import { history } from '../hooks/navigation-context'
 
 export class HttpService {
   private http: AxiosInstance
@@ -31,31 +30,30 @@ export class HttpService {
       async (error) => {
         // Erro de rede (sem resposta do servidor)
         if (error?.code === 'ERR_NETWORK') {
-          history.push('/error500')
+          // history.push('/error500')
           return Promise.reject(error)
         }
 
         const status = error.response?.status
         switch (status) {
           case 401:
-            // Verifica se há token salvo; se sim, faz logout e redireciona
             if (this.authStorage.getToken()) {
-              await store.dispatch(this.authAction.logoutAction())
+              await store.dispatch(this.authAction.logoutAction('ddd'))
               toast.warning('Token expirado ou inválido!')
-              history.push('/signin')
+               //history.push('/signin')
             }
             break
 
           case 403:
-            history.push('/error403')
+            // history.push('/error403')
             break
 
           case 404:
-            history.push('/error404')
+            // history.push('/error404')
             break
 
           case 500:
-            history.push('/error500')
+            // history.push('/error500')
             break
 
           default:

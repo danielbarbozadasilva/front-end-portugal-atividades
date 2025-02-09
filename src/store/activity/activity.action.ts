@@ -1,6 +1,6 @@
 import { createAsyncThunk } from '@reduxjs/toolkit'
 import { toast } from 'react-toastify'
-import { IActivity } from '../../models/models.activity'
+import { IActivity, IActivityFilters } from '../../models/models.activity'
 import ActivityService from '../../services/activity'
 
 export default class ActivityAction {
@@ -12,10 +12,10 @@ export default class ActivityAction {
 
   public listAllActivitiesAction = createAsyncThunk(
     'activity/listAll',
-    async (_, { rejectWithValue }) => {
+    async (filters: IActivityFilters, { rejectWithValue }) => {
       try {
-        const response: IActivity[] = await this.activityService.getAllActivities()
-        return response
+        const response: any = await this.activityService.getAllActivities(filters)
+        return response?.data as any;
       } catch (error: any) {
         toast.error(error.response?.data?.message)
         return rejectWithValue(error.response?.data?.message)

@@ -3,8 +3,20 @@ import { createAsyncThunk } from '@reduxjs/toolkit'
 import { toast } from 'react-toastify'
 import AuthStorage from '../../config/auth'
 import AuthService from '../../services/auth'
-import { IAuth } from '../../models/models.index'
-import { navigate } from '../../hooks/navigation-context'
+
+interface IAuthResponse {
+  data: IDataModel
+  message: string
+  status: number
+  success: boolean
+}
+interface IDataModel {
+  token: string
+  name: string
+  email: string
+  username: string
+  permissions: string
+}
 
 export default class AuthAction {
   private authStorage: AuthStorage
@@ -15,44 +27,44 @@ export default class AuthAction {
     this.authService = new AuthService()
   }
 
-  public signInAction = createAsyncThunk('auth/login', 
-    async (data: { email: string, password: string }): Promise<any> => {
+  public signInAction = createAsyncThunk(
+    'auth/login',
+    async (data: {
+      email: string
+      password: string
+    }): Promise<any> => {
       try {
-        const result:any = await this.authService.loginService({
-          email: data.email,
-          password: data.password
-        })
-        if (result.success) {
-          this.authStorage.saveAuth(result.data)
+        const resultAuth: IAuthResponse | undefined =
+          await this.authService.loginService({
+            email: data.email,
+            password: data.password
+          })
 
-          http.defaults.headers.token = result.data.resultGenerateToken.token
-          const permission: boolean = result.data.resultUserMapper.permissions.includes('administrator')
-          if (permission) {
-            navigate('/dashboard/users')
-          } else {
-            navigate('/')
-          }
-
-          toast.success(`${result.message} ${result?.data?.resultUserMapper.username}`)
-          return result
+        if (resultAuth?.status === 200) {
+          this.authStorage.saveAuth(resultAuth.data)
+          http.defaults.headers.token = resultAuth.data.token
+          return resultAuth
+        } else {
+          toast.error('Usuário ou senha inválidos')
+          return false
         }
       } catch (error: any) {
-        toast.error(error.response?.data?.message || 'Erro ao fazer login')
+        toast.error('Erro ao fazer login')
+        return false
       }
     }
   )
 
   public logoutAction = createAsyncThunk(
     'auth/logout',
-    async (_, { rejectWithValue }) => {
+    async (id: string): Promise<any> => {
       try {
-        this.authService.logoutService()
+        await this.authService.logoutService({ _id: id })
         this.authStorage.removeToken()
-        navigate('/signin')        
         return { success: true }
       } catch (error: any) {
-        toast.error('Erro ao fazer logout')
-        return rejectWithValue(error?.message ?? 'Erro genérico')
+        toast.error('Erro ao fazer login')
+        return false
       }
     }
   )

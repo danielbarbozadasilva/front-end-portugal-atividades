@@ -1,65 +1,49 @@
-import React, { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
+import React, { useState } from 'react'
 import { Navbar, Nav, NavDropdown } from 'react-bootstrap'
 import './styled.css'
-import AuthStorage from '../../../config/auth'
-import { useAppDispatch, useAppSelector } from '../../../hooks'
-import { ICategory, IUser } from './types'
+import { useAppSelector } from '../../../hooks'
+import { AppDispatch, RootState } from '../../../store'
+import AuthAction from '../../../store/auth/auth.action'
+import { useDispatch } from 'react-redux'
+import { useNavigate, Link } from 'react-router-dom'
+
+interface IDataModel {
+  _id: string;
+  token: string
+  name: string
+  email: string
+  username: string
+  permissions: string
+}
 
 const Header: React.FC = () => {
-  const authStorage = new AuthStorage()
-  const user: any = [{ id: 0, username: '', picture: '', isSeller: false }];
-  const category: ICategory[] = [];
-  const [active, setActive] = useState(false)
+  const authResult: IDataModel = useAppSelector((state: RootState) => state.auth.user)
+  const dispatch = useDispatch<AppDispatch>()
+  const authAction = new AuthAction()
+  const navigate = useNavigate()
   const [open, setOpen] = useState(false)
-  const dispatch = useAppDispatch()
-
-  // useEffect(() => {
-  //   dispatch(listAllCategoryAction())
-  // }, [dispatch])
-
-  const isActive = () => {
-    window.scrollY > 0 ? setActive(true) : setActive(false)
-  }
-
-  useEffect(() => {
-    window.addEventListener('scroll', isActive)
-    return () => {
-      window.removeEventListener('scroll', isActive)
-    }
-  }, [])
 
   return (
-    <Navbar className={active ? 'navbar active' : 'navbar'} expand="lg">
+    <Navbar expand="lg">
       <div className="container d-flex justify-content-between align-items-center">
         <Navbar.Brand>
           <div className="logo">
             <Link className="link" to="/" reloadDocument>
-              <span className="text">Freelancer</span>
+              <span className="text">Atividades Turisticas em Portugal</span>
             </Link>
           </div>
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="mr-auto">
-            {user ? (
+            {authResult ? (
               <div className="avatarUser">
-                <img
-                  className="avatar"
-                  src={user?.picture || ''}
-                  alt=""
-                />
                 <NavDropdown
-                  title={user?.username}
+                  title={authResult?.username}
                   id="basic-nav-dropdown"
                   show={open}
                   onClick={() => setOpen(!open)}
                 >
-                  {user.isSeller && (
-                    <NavDropdown.Item as={Link} to="/myproducts" reloadDocument>
-                      Serviços
-                    </NavDropdown.Item>
-                  )}
                   <NavDropdown.Item as={Link} to="/orders" reloadDocument>
                     Pedidos
                   </NavDropdown.Item>
@@ -69,9 +53,16 @@ const Header: React.FC = () => {
                   <NavDropdown.Item
                     as={Link}
                     to="/signin"
-                    onClick={()=>authStorage.removeToken()}
                     reloadDocument
-                  >
+                    onClick={()=>dispatch(authAction.logoutAction(authResult?._id)).then((result)=>{
+                      console.log(result)
+
+                      if(result.payload){
+                        navigate('/')
+                      } else {  
+                        console.log(result)
+                      }
+                    })}>
                     Logout
                   </NavDropdown.Item>
                 </NavDropdown>
@@ -89,26 +80,6 @@ const Header: React.FC = () => {
           </Nav>
         </Navbar.Collapse>
       </div>
-      {active && (
-        <>
-          <hr />
-          <Nav className="ml-auto categories">
-            {category?.length <= 7 &&
-              category?.map((item: ICategory, index: number) => (
-                <Nav.Link
-                  as={Link}
-                  to={`/category/${item.id}`}
-                  key={item.id}
-                  reloadDocument
-                  className="m-4"
-                >
-                  {item.name}
-                </Nav.Link>
-              ))}
-          </Nav>
-          <hr />
-        </>
-      )}
     </Navbar>
   )
 }

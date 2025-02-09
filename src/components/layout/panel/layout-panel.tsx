@@ -22,7 +22,7 @@ import ListMenu from './item-panel'
 import { useAppSelector, useAppDispatch } from '../../../hooks'
 import AuthAction from '../../../store/auth/auth.action'
 import { useNavigate } from 'react-router-dom'
-import { logoutUser } from '../../../store/auth/auth.reducer'
+import { logoutAction, logoutUser } from '../../../store/auth/auth.reducer'
 import { makeStyles } from '@mui/styles'; 
 
 const drawerWidth = 240;
@@ -172,8 +172,6 @@ const Dashboard: React.FC<DashboardProps> = (props) => {
   function handleLogout() {
     logoutAction()
     dispatch(logoutUser())
-    navigate('/signin')
-    navigate(0)
   }
 
   return (

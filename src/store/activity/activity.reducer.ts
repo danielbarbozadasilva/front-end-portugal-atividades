@@ -29,9 +29,9 @@ export class ActivitySlice {
           })
           .addCase(
             this.activityActionInstance.listAllActivitiesAction.fulfilled,
-            (state, action: PayloadAction<IActivity[]>) => {
+            (state, action: PayloadAction<any>) => {
               state.loading = false
-              state.all = action.payload
+              state.all = action.payload.data
             }
           )
           .addCase(this.activityActionInstance.listAllActivitiesAction.rejected, (state, action) => {

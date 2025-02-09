@@ -1,4 +1,10 @@
-import { IAuthUser } from './types'
+interface IDataModel {
+  token: string
+  name: string
+  email: string
+  username: string
+  permissions: string
+}
 
 export default class AuthStorage {
 
@@ -13,8 +19,8 @@ export default class AuthStorage {
     return token
   }
 
-  public getUser(): IAuthUser | false {
-    const user: IAuthUser = JSON.parse(localStorage.getItem(this.tokenKey) || 'null')
+  public getUser(): IDataModel | false {
+    const user: IDataModel = JSON.parse(localStorage.getItem(this.tokenKey) || 'null')
     return user || false
   }
 
@@ -27,7 +33,7 @@ export default class AuthStorage {
     localStorage.removeItem(this.tokenKey)
   }
 
-  public saveAuth(data: IAuthUser): void {
+  public saveAuth(data: IDataModel): void {
     localStorage.setItem(this.tokenKey, JSON.stringify(data))
   }
 }
