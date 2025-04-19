@@ -1,41 +1,26 @@
-import React from 'react'
-import { SContainer, TextSelect, SButton } from './styled'
-import { PaginationComponentProps } from './types'
+import React from 'react';
+import { IPagination } from './types';
+import { styles } from './styled';
 
-const PaginationComponent: React.FC<PaginationComponentProps> = ({ pages, currentPage, itensPerPage, setCurrentPage }) => {
-  const goToPage = (page: number) => {
-    setCurrentPage(page)
+const Pagination: React.FC<IPagination> = ({ currentPage, totalPages, onPageChange }) => {
+  const pages: number[] = [];
+  for (let i = 1; i <= totalPages; i++) {
+    pages.push(i);
   }
-
   return (
-    <SContainer>
-      <TextSelect>
-        {currentPage * itensPerPage + 1}-{(currentPage + 1) * itensPerPage} de{' '}
-        {itensPerPage * pages}
-      </TextSelect>
-      <SButton onClick={() => goToPage(0)} disabled={currentPage === 0}>
-        &#171;
-      </SButton>
-      <SButton
-        onClick={() => goToPage(currentPage - 1)}
-        disabled={currentPage === 0}
-      >
-        &lt;
-      </SButton>
-      <SButton
-        onClick={() => goToPage(currentPage + 1)}
-        disabled={currentPage === pages - 1}
-      >
-        &gt;
-      </SButton>
-      <SButton
-        onClick={() => goToPage(pages - 1)}
-        disabled={currentPage === pages - 1}
-      >
-        &#187;
-      </SButton>
-    </SContainer>
-  )
-}
+    <div style={styles.pagination}>
+      {pages?.length > 0 && pages.map((page) => (
+        <button
+          key={page}
+          disabled={page === currentPage}
+          onClick={() => onPageChange(page)}
+          style={styles.pageButton}
+        >
+          {page}
+        </button>
+      ))}
+    </div>
+  );
+};
 
-export default PaginationComponent
+export default Pagination;

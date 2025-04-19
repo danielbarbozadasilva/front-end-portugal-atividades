@@ -35,16 +35,30 @@ export default class AgentAction {
       }
     }
   )
+  public createAgentAction = createAsyncThunk(
+    'agent/create',
+    async (agent: { data: IAgent }, { rejectWithValue }) => {
+      try {
+        const config = {
+          headers: { 'Content-Type': 'multipart/form-data' }
+        }
+        await this.agentService.createAgent(agent.data, config)
+        toast.success('Agente criado com sucesso')
+        return true
+      } catch (error: any) {
+        toast.error(error.response?.data?.message)
+        return rejectWithValue(false)
+      }
+    }
+  )
 
   public updateAgentAction = createAsyncThunk(
     'agent/update',
     async (agent: { id: string; data: IAgent }, { rejectWithValue }) => {
       try {
-        // Ajuste o config conforme necessário, exemplo de envio de FormData, etc.
         const config = {
           headers: { 'Content-Type': 'multipart/form-data' }
         }
-
         await this.agentService.updateAgent(agent.id, agent.data, config)
         toast.success('Agente atualizado com sucesso')
         return true

@@ -1,47 +1,43 @@
-import React, { ChangeEvent } from 'react'
-import { Container, Row, Col, Form } from 'react-bootstrap'
-import {
-  SFormSignIn,
-  STextForm,
-  SColFooter,
-  SButtonSignIn,
-  STextLink
-} from '../styled'
-import { PageType } from '../../../types'
-import Loading from '../../../loading/form'
-import { useAppSelector } from '../../../../hooks'
+import React, { ChangeEvent } from 'react';
+import { Container, Row, Col, Form } from 'react-bootstrap';
+import { PageType } from '../../../types';
+import Loading from '../../../loading/form';
+import { useAppSelector } from '../../../../hooks';
+import { SButtonSignIn, SColFooter, SFormSignIn, STextForm, STextLink } from './styled';
+import { useTranslation } from 'react-i18next';
 
-const SignIn: React.FC<PageType> = ({ submit }) => {
-  const loading: boolean = useAppSelector((state) => state.auth.loading)
-  const registered: boolean = useAppSelector((state) => state.auth.registered)
-  const [form, setForm] = React.useState({ email: '', password: '' })
+const SignInClientComponent: React.FC<PageType> = ({ submit }) => {
+  const { t } = useTranslation();
+  const loading: boolean = useAppSelector((state) => state.auth.loading);
+  const registered: boolean = useAppSelector((state) => state.auth.registered);
+  const [form, setForm] = React.useState({ email: '', password: '' });
 
   React.useEffect(() => {
     if (registered) {
-      setForm({ email: '', password: '' })
+      setForm({ email: '', password: '' });
     }
-  }, [registered])
+  }, [registered]);
 
   const handleChange = (props: ChangeEvent<HTMLInputElement>) => {
-    const { value, name } = props.target
-    setForm({
-      ...form,
+    const { value, name } = props.target;
+    setForm((prev) => ({
+      ...prev,
       [name]: value
-    })
-  }
+    }));
+  };
 
   const submitForm = () => {
-    submit(form)
-  }
+    submit(form);
+  };
 
   return (
-    <Container>      
+    <Container>
       <Row>
         <Col md={{ span: 6, offset: 3 }}>
           <SFormSignIn>
-          <STextForm>Login</STextForm>
+            <STextForm>{t('loginTitle')}</STextForm>
             <Form.Group className="mb-3">
-              <Form.Label>E-mail:</Form.Label>
+              <Form.Label>{t('email')}:</Form.Label>
               <Form.Control
                 disabled={loading}
                 type="email"
@@ -49,12 +45,11 @@ const SignIn: React.FC<PageType> = ({ submit }) => {
                 id="email"
                 onChange={handleChange}
                 value={form.email || ''}
-                placeholder="Informe o seu e-mail"
+                placeholder={t('placeholder.emailLogin') || ''}
               />
             </Form.Group>
-
             <Form.Group className="mb-3">
-              <Form.Label>Senha</Form.Label>
+              <Form.Label>{t('password')}:</Form.Label>
               <Form.Control
                 disabled={loading}
                 type="password"
@@ -62,24 +57,26 @@ const SignIn: React.FC<PageType> = ({ submit }) => {
                 id="password"
                 onChange={handleChange}
                 value={form.password || ''}
-                placeholder="Informe a sua senha"
+                placeholder={t('placeholder.passwordLogin') || ''}
               />
             </Form.Group>
+
             {loading ? (
               <Loading />
             ) : (
               <SButtonSignIn type="button" onClick={submitForm}>
-                Entrar
+                {t('signInButton')}
               </SButtonSignIn>
             )}
+
             <SColFooter>
-              Esqueceu a senha?{' '}
-              <STextLink href="/recovery-password">Redefinir senha</STextLink>
+              {t('forgotPassword')}?{' '}
+              <STextLink href="/recovery-password">{t('resetPassword')}</STextLink>
             </SColFooter>
           </SFormSignIn>
         </Col>
       </Row>
     </Container>
-  )
-}
-export default SignIn
+  );
+};
+export default SignInClientComponent;

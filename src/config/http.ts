@@ -1,75 +1,120 @@
-import axios, { AxiosInstance } from 'axios'
-import { toast } from 'react-toastify'
-import AuthStorage from '../config/auth'
-import AuthAction from '../store/auth/auth.action'
-import store from '../store'
+// HttpService.ts
+import axios, { AxiosInstance } from 'axios';
+import { toast } from 'react-toastify';
+import { AuthStorage } from '../config/auth';
 
 export class HttpService {
-  private http: AxiosInstance
-  private authStorage: AuthStorage
-  private authAction: AuthAction
+  private http: AxiosInstance;
+  private authStorage: AuthStorage;
 
-  constructor(baseURL: string = process.env.REACT_APP_BASE_URL || 'http://localhost:3000') {
-    this.authStorage = new AuthStorage()
-    this.authAction = new AuthAction()
-
+  constructor() {
+    this.authStorage = new AuthStorage();
     this.http = axios.create({
-      baseURL,
+      baseURL: process.env.REACT_APP_BASE_URL!,
       headers: {
         'Content-Type': 'application/json'
       }
-    })
+    });
 
-    const token = this.authStorage.getToken()
-    if (token) {
-      this.http.defaults.headers.token = token
+    const existingToken = this.authStorage.getToken();
+    if (existingToken) {
+      this.http.defaults.headers.token = existingToken;
     }
 
+    this.http.interceptors.request.use(
+      async (config) => {
+        if (config.url?.includes('/auth/check-token')) {
+          return config; 
+        }
+
+        const token = this.authStorage.getToken();
+
+        if (token) {
+          try {
+            // 1) Checa se token é válido
+            const resp = await this.http.post('/auth/check-token', { token });
+            const data = resp.data;
+
+            if (!data.success) {
+              // Token inválido
+              toast.warning('Token inválido ou expirado! Fazendo logout...');
+              this.doLogout();
+              // Cancela a requisição original
+              return Promise.reject('Token inválido');
+            }
+
+            // Se chegou aqui, token é válido
+            // 2) Adicionamos o token no header da requisição original
+            config.headers.token = token;
+            return config;
+          } catch (err) {
+            // Se deu erro no check-token, força logout
+            toast.error('Erro ao validar token!');
+            this.doLogout();
+            return Promise.reject(err);
+          }
+        }
+
+        // Se não tem token, segue a requisição, mas possivelmente
+        // seu backend vai recusar. Fica a seu critério.
+        return config;
+      },
+      (error) => {
+        // Erro no próprio request interceptor
+        return Promise.reject(error);
+      }
+    );
+
+    // Interceptor de RESPONSE (se quiser tratar erros 401, 403, 500 etc.)
     this.http.interceptors.response.use(
       (response) => response,
       async (error) => {
-        // Erro de rede (sem resposta do servidor)
+        // Se quiser tratar erros de rede
         if (error?.code === 'ERR_NETWORK') {
-          // history.push('/error500')
-          return Promise.reject(error)
+          // Trate erros de rede se desejar
+          return Promise.reject(error);
         }
 
-        const status = error.response?.status
+        // Exemplo: se o backend retornar 401 numa rota
+        const status = error.response?.status;
         switch (status) {
           case 401:
+            // Talvez forçar logout e redirecionar
             if (this.authStorage.getToken()) {
-              await store.dispatch(this.authAction.logoutAction('ddd'))
-              toast.warning('Token expirado ou inválido!')
-               //history.push('/signin')
+              this.doLogout();
+              toast.warning('Acesso não autorizado (401)!');
             }
-            break
-
+            break;
           case 403:
-            // history.push('/error403')
-            break
-
+            toast.error('Acesso proibido (403)!');
+            break;
           case 404:
-            // history.push('/error404')
-            break
-
+            toast.error('Recurso não encontrado (404)!');
+            break;
           case 500:
-            // history.push('/error500')
-            break
-
+            toast.error('Erro interno do servidor (500)!');
+            break;
           default:
-            // Caso queira lidar com outros códigos ou erro genérico
-            console.error('Erro não tratado:', status, error.message)
-            break
+            console.error('Erro não tratado:', status, error.message);
+            toast.error(`Erro: ${error.message}`);
+            break;
         }
-        return Promise.reject(error)
+        return Promise.reject(error);
       }
-    )
+    );
+  }
+
+  // Método para efetuar logout: limpa Redux, limpa localStorage, etc.
+  private doLogout() {
+    this.authStorage.removeToken();
+    window.location.href = '/signin'; 
   }
 
   public getHttp(): AxiosInstance {
-    return this.http
+    return this.http;
   }
 }
 
-const httpInstance = new HttpService().getHttp()
-export default httpInstance
+// Exporta instância única do serviço
+const httpInstance = new HttpService().getHttp();
+export default httpInstance;

@@ -9,10 +9,11 @@ import RatingMethodSlice from './rating/rating.reducer'
 import OrderSlice from './order/order.reducer'
 import ContentPageSlice from './contentPage/contentPage.reducer'
 import GroupSlice from './group/group.reducer'
-import PaymentSlice  from './payment/payment.reducer'
+import PaymentSlice from './payment/payment.reducer'
 import PaymentMethodSlice from './paymentMethod/paymentMethod.reducer'
 import SolicitationCartItemSlice from './solicitationCart/solicitationCart.reducer'
 import SolicitationReducer from './solicitation/solicitation.reducer'
+import LocalizationReducer from './localization/localization.reducer'
 
 const store = configureStore({
   reducer: {
@@ -30,11 +31,11 @@ const store = configureStore({
     solicitation: SolicitationReducer,
     solicitationCart: SolicitationCartItemSlice,
     user: UserSlice,
+    localization: LocalizationReducer,
   }
 })
 
 export type RootState = ReturnType<typeof store.getState>
-
 export type AppDispatch = typeof store.dispatch
 
 export default store

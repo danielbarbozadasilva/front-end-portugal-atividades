@@ -1,13 +1,13 @@
-import { createSlice, PayloadAction, Slice } from '@reduxjs/toolkit'
-import ClientAction from './client.action'
-import { IClient } from '../../models/models.index'
+import { createSlice, PayloadAction, Slice } from '@reduxjs/toolkit';
+import { ClientAction } from './client.action';
+import { IClient } from '../../models/models.index';
 
 export class ClientSlice {
-  private clientActionInstance: ClientAction
-  public slice: Slice
+  private clientActionInstance: ClientAction;
+  public slice: Slice;
 
   constructor() {
-    this.clientActionInstance = new ClientAction()
+    this.clientActionInstance = new ClientAction();
 
     this.slice = createSlice({
       name: 'client',
@@ -19,7 +19,7 @@ export class ClientSlice {
       },
       reducers: {
         setError: (state, action: PayloadAction<string>) => {
-          state.error = action.payload
+          state.error = action.payload;
         }
       },
       extraReducers: (builder) => {
@@ -27,137 +27,135 @@ export class ClientSlice {
           .addCase(
             this.clientActionInstance.listAllClientsAction.pending,
             (state) => {
-              state.loading = true
+              state.loading = true;
             }
           )
           .addCase(
             this.clientActionInstance.listAllClientsAction.fulfilled,
             (state, action: PayloadAction<IClient[]>) => {
-              state.loading = false
-              state.all = action.payload
+              state.loading = false;
+              state.all = action.payload;
             }
           )
           .addCase(
             this.clientActionInstance.listAllClientsAction.rejected,
             (state, action) => {
-              state.loading = false
-              state.error = action.error.message || 'Failed to fetch'
+              state.loading = false;
+              state.error = action.error.message || 'Failed to fetch';
             }
-          )
+          );
 
         builder
           .addCase(
             this.clientActionInstance.listClientByIdAction.pending,
             (state) => {
-              state.loading = true
+              state.loading = true;
             }
           )
           .addCase(
             this.clientActionInstance.listClientByIdAction.fulfilled,
             (state, action: PayloadAction<IClient>) => {
-              state.loading = false
-              state.clientid = action.payload
+              state.loading = false;
+              state.clientid = action.payload;
             }
           )
           .addCase(
             this.clientActionInstance.listClientByIdAction.rejected,
             (state, action) => {
-              state.loading = false
-              state.error = action.error.message || 'Failed to fetch'
+              state.loading = false;
+              state.error = action.error.message || 'Failed to fetch';
             }
-          )
+          );
 
         builder
           .addCase(
             this.clientActionInstance.createClientAction.pending,
             (state) => {
-              state.loading = true
+              state.loading = true;
             }
           )
           .addCase(
             this.clientActionInstance.createClientAction.fulfilled,
             (state) => {
-              state.loading = false
+              state.loading = false;
             }
           )
           .addCase(
             this.clientActionInstance.createClientAction.rejected,
             (state, action) => {
-              state.loading = false
-              state.error = action.error.message || 'Failed to fetch'
+              state.loading = false;
+              state.error = action.error.message || 'Failed to fetch';
             }
-          )
+          );
 
         builder
           .addCase(
             this.clientActionInstance.updateClientAction.pending,
             (state) => {
-              state.loading = true
+              state.loading = true;
             }
           )
           .addCase(
             this.clientActionInstance.updateClientAction.fulfilled,
             (state) => {
-              state.loading = false
+              state.loading = false;
             }
           )
           .addCase(
             this.clientActionInstance.updateClientAction.rejected,
             (state, action) => {
-              state.loading = false
-              state.error = action.error.message || 'Failed to fetch'
+              state.loading = false;
+              state.error = action.error.message || 'Failed to fetch';
             }
-          )
+          );
 
         builder
           .addCase(
             this.clientActionInstance.removeClientAction.pending,
             (state) => {
-              state.loading = true
+              state.loading = true;
             }
           )
           .addCase(
             this.clientActionInstance.removeClientAction.fulfilled,
             (state) => {
-              state.loading = false
+              state.loading = false;
             }
           )
           .addCase(
             this.clientActionInstance.removeClientAction.rejected,
             (state, action) => {
-              state.loading = false
-              state.error = action.error.message || 'Failed to fetch'
+              state.loading = false;
+              state.error = action.error.message || 'Failed to fetch';
             }
-          )
+          );
       }
-    })
+    });
   }
 
   public getActions() {
-    return this.slice.actions
+    return this.slice.actions;
   }
 
   public getClientActions() {
-    return this.clientActionInstance
+    return this.clientActionInstance;
   }
 
   public getReducer() {
-    return this.slice.reducer
+    return this.slice.reducer;
   }
 }
 
-const clientSliceInstance = new ClientSlice()
+const clientSliceInstance = new ClientSlice();
 
-// Export das actions locais do slice (e.g. setError)
-export const { setError } = clientSliceInstance.getActions()
+export const { setError } = clientSliceInstance.getActions();
 
-// Export das actions assíncronas (thunks) do ClientAction
 export const {
   listAllClientsAction,
   listClientByIdAction,
+  createClientAction,
   updateClientAction,
   removeClientAction
-} = clientSliceInstance.getClientActions()
+} = clientSliceInstance.getClientActions();
 
-// Export do reducer
-export default clientSliceInstance.getReducer()
+export default clientSliceInstance.getReducer();

@@ -1,11 +1,10 @@
-export interface PaginationComponentProps {
-  pages: number
-  currentPage: number
-  itensPerPage: number
-  setCurrentPage: (page: number) => void
+export interface IPagination {
+  currentPage: number;
+  totalPages: number;
+  onPageChange: (page: number) => void; 
 }
 
-export interface PaginationSelectorProps {
-  itensPerPage: number
-  setItensPerPage: (value: number) => void
+export type PageTitle = {
+  title: string
 }
+

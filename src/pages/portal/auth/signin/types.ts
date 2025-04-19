@@ -1,3 +1,7 @@
 export type PageTitle = {
-  title: string
+  title: string;
+};
+
+export interface ISignInInterface {
+  credentials: { email: String; password: String };
 }

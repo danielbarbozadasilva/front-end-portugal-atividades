@@ -1,5 +1,7 @@
-import { IPaymentMethod } from "./models.paymentMethod";
-import { IUser } from "./models.user";
+import { IPaymentMethod } from './interfaces.paymentMethod';
+import { IUser as IUserInterface } from './interfaces.index';
+
+type userTypes = 'administrator' | 'client' | 'agent' | 'manager' | 'support' | 'developer';
 
 interface Address {
   street: string;
@@ -11,9 +13,30 @@ interface Address {
   zipCode: string;
 }
 
+export interface IUser {
+  hash: string;
+  salt: string;
+  name: string;
+  email: string;
+  username: string;
+  permissions: userTypes[];
+  recovery?: {
+    token?: string;
+    date?: Date;
+  };
+  refreshToken?: {
+    data: string;
+    expiresIn: number;
+    iv: string;
+  };
+  createdAt: Date;
+  updatedAt: Date;
+  wasNew?: any;
+}
+
 export interface IClient {
   _id: string;
-  user: IUser;
+  user: IUserInterface;
   name: string;
   birthDate: Date;
   cpf: string;

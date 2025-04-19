@@ -22,6 +22,8 @@
     "jsx": "react-jsx"
   },
   "include": [
-    "src"
-, "routers.tsx"  ]
+    "src",   
+    "routers.tsx",
+    "global.d.ts"  
+  ]
 }

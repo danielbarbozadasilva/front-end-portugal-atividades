@@ -1,16 +1,16 @@
-import { IActivity } from './models.activity';
-import { IAgent } from './models.agent';
-import { IClient } from './models.client';
-import { IOrder } from './models.order';
-import { IPayment } from './models.payment';
-import { IRating } from './models.rating';
-import { ISolicitation } from './models.solicitation';
-import { IUser } from './models.user';
-import { IGroup } from './models.group';
-import { IPaymentMethod } from './models.paymentMethod';
-import { IContentPage } from './models.contentPage';
-import { IAuditLog } from './models.auditLog';
-import { IAuth } from './models.auth';
+import { IActivity } from './interfaces.activity';
+import { IAgent } from './interfaces.agent';
+import { IClient } from './interfaces.client';
+import { IOrder } from './interfaces.order';
+import { IPayment } from './interfaces.payment';
+import { IRating } from './interfaces.rating';
+import { ISolicitation } from './interfaces.solicitation';
+import { IUser } from './interfaces.user';
+import { IGroup } from './interfaces.group';
+import { IPaymentMethod } from './interfaces.paymentMethod';
+import { IContentPage } from './interfaces.contentPage';
+import { IAuditLog } from './interfaces.auditLog';
+import { IAuth } from './interfaces.auth';
 
 export type {
   IActivity,

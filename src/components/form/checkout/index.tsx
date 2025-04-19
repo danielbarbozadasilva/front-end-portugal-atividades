@@ -8,7 +8,7 @@ import {
 import { StripeLinkAuthenticationElementChangeEvent } from '@stripe/stripe-js'
 import { SButton } from '../../portal/button/basic/styled'
 import Loading from '../../loading/form'
-import { SContainerLoading } from './styled'
+import { SContainerLoading } from '../checkout/styled'
 
 const CheckoutForm: React.FC = () => {
   const stripe = useStripe()

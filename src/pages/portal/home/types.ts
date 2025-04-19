@@ -1,5 +1,5 @@
 export interface ILocationCoordinates {
-  type: string; 
+  type: string;
   coordinates: number[];
 }
 
@@ -47,7 +47,7 @@ export interface IAddress {
 }
 export interface IClient {
   address: IAddress;
-  paymentMethods: any[]; 
+  paymentMethods: any[];
   _id: string;
   user: string;
   name: string;
@@ -126,11 +126,9 @@ export interface IActivityFilters {
 export interface IPagination {
   currentPage: number;
   totalPages: number;
-  onPageChange: (page: number) => void; 
+  onPageChange: (page: number) => void;
 }
 
 export type PageTitle = {
-  title: string
-}
-
-
+  title: string;
+};

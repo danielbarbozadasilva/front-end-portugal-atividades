@@ -15,7 +15,7 @@ export default class ActivityAction {
     async (filters: IActivityFilters, { rejectWithValue }) => {
       try {
         const response: any = await this.activityService.getAllActivities(filters)
-        return response?.data as any;
+        return response?.data as any
       } catch (error: any) {
         toast.error(error.response?.data?.message)
         return rejectWithValue(error.response?.data?.message)
@@ -43,7 +43,6 @@ export default class ActivityAction {
         const config = {
           headers: { 'Content-Type': 'multipart/form-data' }
         }
-
         await this.activityService.updateActivity(activity.id, activity.data, config)
         toast.success('Atividade atualizada com sucesso')
         return true
@@ -61,6 +60,20 @@ export default class ActivityAction {
         await this.activityService.deleteActivity(id)
         toast.success('Atividade removida com sucesso')
         return true
+      } catch (error: any) {
+        toast.error(error.response?.data?.message)
+        return rejectWithValue(error.response?.data?.message)
+      }
+    }
+  )
+
+  public createActivityAction = createAsyncThunk(
+    'activity/create',
+    async (data: IActivity | FormData, { rejectWithValue }) => {
+      try {
+        const response = await this.activityService.createActivity(data as any)
+        toast.success('Atividade criada com sucesso')
+        return response
       } catch (error: any) {
         toast.error(error.response?.data?.message)
         return rejectWithValue(error.response?.data?.message)

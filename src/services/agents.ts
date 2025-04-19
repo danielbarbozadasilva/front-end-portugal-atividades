@@ -2,11 +2,20 @@ import http from '../config/http';
 import { IAgent } from '../models/models.index';
 import { handleError } from './handler-error';
 
+// Interface para respostas padronizadas do backend
+interface IResponse<T> {
+  status: number;
+  success: boolean;
+  message: string;
+  data: T;
+}
+
 export default class AgentService {
   public async getAgent(id: string): Promise<IAgent> {
     try {
-      const response = await http.get<IAgent>(`/agents/${id}`);
-      return response.data;
+      // Backend retorna um objeto IResponse<IAgent>
+      const response = await http.get<IResponse<IAgent>>(`/agents/${id}`);
+      return response.data.data;
     } catch (error) {
       handleError(error);
       throw error;
@@ -15,37 +24,39 @@ export default class AgentService {
 
   public async getAllAgents(): Promise<IAgent[]> {
     try {
-      const response = await http.get<IAgent[]>('/agents');
-      return response.data;
+      // Backend retorna IResponse<IAgent[]>
+      const response = await http.get<IResponse<IAgent[]>>('/agents');
+      return response.data.data;
     } catch (error) {
       handleError(error);
       throw error;
     }
   }
 
-  public async createAgent(agent: IAgent): Promise<IAgent> {
+  public async createAgent(agent: IAgent, config?: any): Promise<IAgent> {
     try {
-      const response = await http.post<IAgent>('/agents', agent);
-      return response.data;
+      const response = await http.post<IResponse<IAgent>>('/agents', agent, config);
+      return response.data.data;
     } catch (error) {
       handleError(error);
       throw error;
     }
   }
 
-  public async updateAgent(id: string, agent: IAgent, config: any): Promise<IAgent> {
+  public async updateAgent(id: string, agent: IAgent, config?: any): Promise<IAgent> {
     try {
-      const response = await http.put<IAgent>(`/agents/${id}`, agent, config);
-      return response.data;
+      const response = await http.put<IResponse<IAgent>>(`/agents/${id}`, agent, config);
+      return response.data.data;
     } catch (error) {
       handleError(error);
       throw error;
     }
   }
 
-  public async deleteAgent(id: string): Promise<void> {
+  public async deleteAgent(id: string, config?: any): Promise<void> {
     try {
-      await http.delete(`/agents/${id}`);
+      // Agora aceitamos config para enviar cabeçalhos de auth
+      await http.delete(`/agents/${id}`, config);
     } catch (error) {
       handleError(error);
       throw error;

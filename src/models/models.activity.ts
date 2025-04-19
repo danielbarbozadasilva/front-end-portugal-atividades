@@ -57,7 +57,7 @@ export interface IAddress {
 // Interface para o cliente
 export interface IClient {
   address: IAddress;
-  paymentMethods: allowedPaymentMethods[]; // Se houver uma estrutura definida para métodos de pagamento, substitua "any" por essa interface.
+  paymentMethods: allowedPaymentMethods[];
   _id: string;
   user: string;
   name: string;
